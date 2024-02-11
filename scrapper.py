@@ -4,7 +4,11 @@ import pandas as pd
 
 url = "https://www.eazydiner.com/mumbai/restaurants"
 
-response = requests.get(url) 
+try: 
+    response = requests.get(url)
+    response.raise_for_status() 
+except requests.exceptions.HTTPError as errh:
+    print(f"HTTP error occurred: {errh}")
 
 if response.status_code == 200: 
     print("Success!")
@@ -13,7 +17,6 @@ else:
 
 data = []
 soup = BeautifulSoup(response.text, 'html.parser')
-
 
 restaurants = soup.find_all('div', class_="padding-10 radius-4 bg-white restaurant margin-b-10")
 for restaurant in restaurants: 
@@ -24,10 +27,3 @@ for restaurant in restaurants:
 
 df = pd.DataFrame(data)
 df.to_csv("restaurants.csv", index=False)
-
-
-
-
-
-
-        
